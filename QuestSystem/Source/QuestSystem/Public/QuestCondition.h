@@ -1,0 +1,115 @@
+// Copyright (c) 2026 Logan Chambers. All Rights Reserved.\n
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "UObject/NoExportTypes.h"
+#include "Templates/SubclassOf.h"
+#include "QuestCondition.generated.h"
+
+class UQuestComponent;
+class UQuest;
+
+
+UCLASS(Abstract, Blueprintable, EditInlineNew, DefaultToInstanced)
+class QUESTSYSTEM_API UQuestCondition : public UObject
+{
+	GENERATED_BODY()
+
+public:
+	// Check if the condition is met
+	UFUNCTION(BlueprintNativeEvent, Category = "Quest Condition")
+	bool CheckCondition(UQuestComponent* QuestComp) const;
+	virtual bool CheckCondition_Implementation(UQuestComponent* QuestComp) const;
+
+	// Get a description of this condition
+	UFUNCTION(BlueprintNativeEvent, Category = "Quest Condition")
+	FString GetConditionDescription() const;
+	virtual FString GetConditionDescription_Implementation() const;
+};
+
+//Condition that checks if a quest is active
+ 
+UCLASS(DisplayName = "Quest Active")
+class QUESTSYSTEM_API UQuestCondition_QuestActive : public UQuestCondition
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Condition")
+	TSubclassOf<UQuest> QuestClass;
+
+	virtual bool CheckCondition_Implementation(UQuestComponent* QuestComp) const override;
+	virtual FString GetConditionDescription_Implementation() const override;
+};
+
+// Condition that checks if a quest has succeeded
+
+UCLASS(DisplayName = "Quest Succeeded")
+class QUESTSYSTEM_API UQuestCondition_QuestSucceeded : public UQuestCondition
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Condition")
+	TSubclassOf<UQuest> QuestClass;
+
+	virtual bool CheckCondition_Implementation(UQuestComponent* QuestComp) const override;
+	virtual FString GetConditionDescription_Implementation() const override;
+};
+
+// Condition that checks if a quest has failed
+ 
+UCLASS(DisplayName = "Quest Failed")
+class QUESTSYSTEM_API UQuestCondition_QuestFailed : public UQuestCondition
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Condition")
+	TSubclassOf<UQuest> QuestClass;
+
+	virtual bool CheckCondition_Implementation(UQuestComponent* QuestComp) const override;
+	virtual FString GetConditionDescription_Implementation() const override;
+};
+
+//Condition that checks if a quest is at a specific state
+ 
+UCLASS(DisplayName = "Quest At State")
+class QUESTSYSTEM_API UQuestCondition_QuestAtState : public UQuestCondition
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Condition")
+	TSubclassOf<UQuest> QuestClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Condition")
+	FName StateID;
+
+	virtual bool CheckCondition_Implementation(UQuestComponent* QuestComp) const override;
+	virtual FString GetConditionDescription_Implementation() const override;
+};
+
+// Condition that checks if a data task has been completed
+ 
+UCLASS(DisplayName = "Data Task Completed")
+class QUESTSYSTEM_API UQuestCondition_DataTaskCompleted : public UQuestCondition
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Condition")
+	FName DataTask;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Condition")
+	FString Argument;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Condition")
+	int32 MinimumCount;
+
+	UQuestCondition_DataTaskCompleted();
+
+	virtual bool CheckCondition_Implementation(UQuestComponent* QuestComp) const override;
+	virtual FString GetConditionDescription_Implementation() const override;
+};
